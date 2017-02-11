@@ -1,6 +1,8 @@
 
 import sys
 import requests
+import bs4
+import re
 
 RANGERS = (
     "秘密戦隊ゴレンジャー",
@@ -54,8 +56,15 @@ def make_url(no):
     title = RANGERS[no - 1]
     return WIKI_URL + title
 
+def pick_out_content(url):
+    response = requests.get(url)
+    soup = bs4.BeautifulSoup(response.text, "html.parser")
 
 
+    # TODO 抽出処理を別途分けてテストできるようにする
+    title = soup.find("h1").string
+    overview = soup.find_all("h2")[1].nextSibling.nextSibling.text
+    return [title, overview]
 
 
 def main():
